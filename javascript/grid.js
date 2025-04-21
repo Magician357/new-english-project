@@ -37,7 +37,7 @@ class grid_obj{
         return this.grid[y][x];
     }
 
-    draw(render,sx=0,sy=0,colors = {"-1":"grey","0":"white","1":"blue"}){
+    draw(render,colors = {"-1":"grey","0":"white","1":"blue"},sx=0,sy=0){
         // let last_point;
         const hex_r = this.hex_r;
         const hex_a = this.hex_a;
@@ -60,8 +60,37 @@ class grid_obj{
         for (let iy = 0; iy < this.height; iy++){
             for (let ix = 0; ix < this.width; ix++){
                 if ((x-this.coords[iy][ix][0])**2 + (y-this.coords[iy][ix][1])**2 <= r){
-                    this.grid[iy][ix] = new_val;
-                    return true;
+                    if (this.grid[iy][ix] === 0) {
+                        this.grid[iy][ix] = new_val;
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    play(x,y,new_val){
+        const r = (hex_r - 5)**2;
+        for (let iy = 1; iy < this.height-1; iy++){
+            for (let ix = 1; ix < this.width-1; ix++){
+                if ((x-this.coords[iy][ix][0])**2 + (y-this.coords[iy][ix][1])**2 <= r){
+                    if (this.grid[iy][ix] === 0 && (
+                            this.grid[iy-1][ix-1] === new_val ||
+                            this.grid[iy-1][ix  ] === new_val ||
+                            this.grid[iy-1][ix+1] === new_val ||
+                            this.grid[iy  ][ix-1] === new_val ||
+                            this.grid[iy  ][ix+1] === new_val ||
+                            this.grid[iy+1][ix-1] === new_val ||
+                            this.grid[iy+1][ix  ] === new_val ||
+                            this.grid[iy+1][ix+1] === new_val
+                        )
+                    ){
+                        this.grid[iy][ix] = new_val;
+                        return true;
+                    } else {return false}
                 }
             }
         }
