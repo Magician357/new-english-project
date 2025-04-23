@@ -53,17 +53,17 @@ class render_obj {
     }
 
     set_camera(x, y, camera_zoom=this.camera_zoom) {
-        this.camera_x     = x;
-        this.camera_y     = y;
-        this.camera_zoom  = camera_zoom;
-        this.camera_dx    = x;
-        this.camera_dy    = y;
-        this.camera_dzoom = camera_zoom;
+        this.camera_x     = x || 0;
+        this.camera_y     = y || 0;
+        this.camera_zoom  = camera_zoom || 0.4;
+        this.camera_dx    = x || 0;
+        this.camera_dy    = y || 0;
+        this.camera_dzoom = camera_zoom || 0.4;
     }
 
     set_camera_desired(x,y,camera_zoom=this.camera_zoom){
         this.camera_dx    = x;
-        this.camera_dy    = y;
+        this.camera_dy    = -y;
         this.camera_dzoom = camera_zoom;
     }
 
@@ -71,6 +71,7 @@ class render_obj {
         this.camera_x += (this.camera_dx - this.camera_x) * 0.2 * dt;
         this.camera_y += (this.camera_dy - this.camera_y) * 0.2 * dt;
         this.camera_zoom += (this.camera_dzoom - this.camera_zoom) * 0.2 * dt;
+        this.camera_zoom = this.camera_zoom || 0.4;
     }
 
     world_to_camera(x, y) {

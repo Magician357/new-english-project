@@ -36,6 +36,15 @@ var player_count = 4;
 var players = player_list(player_count);
 var cur_player = 0;
 
+var zoom_point = {x:0,y:0};
+var nx = 0, ny = 0;
+
+function test_zoom(x,y){
+    cur_zoom = -2;
+    render.set_camera_desired(x,y);
+    zoom_point = {x:x,y:y};
+}
+
 function main_loop(now){
     render.clear();
     render.tick_camera();
@@ -47,20 +56,39 @@ function main_loop(now){
         render.set_camera_desired(0,0,1);
     }
     else if (cur_zoom === 0){
-        render.set_camera_desired(Math.floor(last_point[0]/2),Math.floor(-last_point[1]/2),0.4);
+        render.set_camera_desired(Math.floor(last_point[0]/2),Math.floor(last_point[1]/2),0.4);
     }
+    else if (cur_zoom === 1){
+        // let view_rect  = render.view_rect();
+        zoom_point = players[cur_player].get_camera_view();
+        // let zoom_point = players[cur_player].get_camera_view(view_rect[2],view_rect[3]);
+        // [nx,ny] = render.world_to_camera(zoom_point.x,zoom_point.y);
+        render.set_camera_desired(zoom_point.x,zoom_point.y,zoom_point.zoom);
+    }
+    // render.draw_circle(zoom_point.x,zoom_point.y,45,"orange");
 
     let world_point = render.camera_to_world(click_point[0],click_point[1]);
     if (clicked){
         // console.log(world_point);
+        console.log("click for player",cur_player);
         let collide;
+        let point;
+        let res;
         if (players[cur_player].turns === 0 ){
-            collide = grid.set_world(world_point[0],world_point[1],players[cur_player].id);
+            res = grid.set_world(world_point[0],world_point[1],players[cur_player].id);
         } else {
-            collide = grid.play(world_point[0],world_point[1],players[cur_player].id);
+            res = grid.play(world_point[0],world_point[1],players[cur_player].id);
         }
+        collide = res.collided;
+        point = res.point;
+        console.log("result",res);
         console.log("Click collided:",collide);
+        console.log(point);
         if (collide) {
+            if (cur_player === player_count-1 && players[cur_player].turns > 1){
+                cur_zoom = 1;
+            }
+            players[cur_player].change_zoom(point);
             players[cur_player].turns++;
             cur_player = (cur_player+1) % player_count
         };

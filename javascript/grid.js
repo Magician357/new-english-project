@@ -62,14 +62,14 @@ class grid_obj{
                 if ((x-this.coords[iy][ix][0])**2 + (y-this.coords[iy][ix][1])**2 <= r){
                     if (this.grid[iy][ix] === 0) {
                         this.grid[iy][ix] = new_val;
-                        return true;
+                        return {collided: true, point: this.coords[iy][ix]};
                     } else {
-                        return false;
+                        return {collided: false, point: []};
                     }
                 }
             }
         }
-        return false;
+        return {collided: false, point: []};
     }
 
     play(x,y,new_val){
@@ -89,11 +89,11 @@ class grid_obj{
                         )
                     ){
                         this.grid[iy][ix] = new_val;
-                        return true;
-                    } else {return false}
+                        return {collided: true, point: this.coords[iy][ix]};
+                    } else {return {collided: false, point: []};}
                 }
             }
         }
-        return false;
+        return {collided: false, point: []};
     }
 }
