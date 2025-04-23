@@ -4,7 +4,9 @@ const colors = {
     "1" : "red",
     "2" : "green",
     "3" : "blue",
-    "4" : "yellow"
+    "4" : "yellow",
+    "5" : "orange",
+    "6" : "cyan"
 }
 
 const hex_r = 45;
@@ -43,6 +45,7 @@ var answering = false;
 var trivia_state = 0;
 var trivia_allowed = false;
 var trivia_answered = false;
+var trivia_wrong = false;
 
 var zoom_point = {x:0,y:0};
 var nx = 0, ny = 0;
@@ -109,6 +112,7 @@ function handle_trivia(answer){
     } else {
         trivia_state = 2;
         cur_player = (cur_player+1)%player_count;
+        trivia_wrong = true;
     }
 }
 
@@ -159,7 +163,7 @@ function main_loop(now){
                 }
             } else {
                 answering = false;
-                trivia_answered = false;
+                if (trivia_wrong) {trivia_answered = false;}
             }
         }
         else if (inside_rect(click_point[0],click_point[1],20,200,200,300)){
@@ -167,6 +171,7 @@ function main_loop(now){
                 cur_question = get_trivia();
                 answering=true;
                 trivia_state = 0;
+                trivia_wrong = false;
             }
         }
         else {
@@ -190,9 +195,24 @@ function main_loop(now){
                 // }
                 players[cur_player].change_zoom(point);
                 players[cur_player].turns++;
-                if (extra_turns <= 0) {cur_player = (cur_player+1) % player_count}
+                if (extra_turns <= 0) {
+                    cur_player = (cur_player+1) % player_count;
+                    trivia_answered = false;
+                    // events
+                    if (cur_player === 0){
+                        let event = Math.ceil(Math.random()*10);
+                        // let event = 1;
+                        if (event === 1){
+                            // bad event!
+                            alert("Big day at work! Everyone lose one random space.")
+                            for (let p=1; p <= player_count; p++){
+                                // console.log(p);
+                                grid.remove_random_play(p);
+                            }
+                        }
+                    }
+                }
                 else {extra_turns--}
-                trivia_answered = false;
             };
         }
     }

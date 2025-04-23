@@ -31,6 +31,7 @@ class grid_obj{
         }
         this.hex_r = hex_r;
         this.hex_a = hex_a;
+        this.plays = {};
     }
 
     get(x,y){
@@ -55,12 +56,18 @@ class grid_obj{
         return [this.coords[this.height-1][this.width-1]];
     }
 
-    set_world(x,y,new_val){
+    set_world(x,y,new_val,bypass=false){
         const r = (hex_r - 5)**2;
         for (let iy = 0; iy < this.height; iy++){
             for (let ix = 0; ix < this.width; ix++){
                 if ((x-this.coords[iy][ix][0])**2 + (y-this.coords[iy][ix][1])**2 <= r){
-                    if (this.grid[iy][ix] === 0) {
+                    if (bypass || this.grid[iy][ix] === 0) {
+                        if (new_val > 0){
+                            if (!this.plays.hasOwnProperty(new_val)){
+                                this.plays[new_val] = [];
+                            }
+                            this.plays[new_val].push([ix,iy]);
+                        }
                         this.grid[iy][ix] = new_val;
                         return {collided: true, point: this.coords[iy][ix]};
                     } else {
@@ -89,11 +96,29 @@ class grid_obj{
                         )
                     ){
                         this.grid[iy][ix] = new_val;
+                        if (new_val > 0){
+                            if (!this.plays.hasOwnProperty(new_val)){
+                                this.plays[new_val] = [];
+                            }
+                            this.plays[new_val].push([ix,iy]);
+                        }
                         return {collided: true, point: this.coords[iy][ix]};
                     } else {return {collided: false, point: []};}
                 }
             }
         }
         return {collided: false, point: []};
+    }
+
+    remove_random_play(id){
+        if (this.plays.hasOwnProperty(id) && this.plays[id].length > 1){
+            let index = Math.floor(Math.random()*this.plays[id].length);
+            let [ix,iy] = this.plays[id][index];
+            delete this.plays[id][index];
+            this.grid[iy][ix] = 0;
+            return true;
+        } else {
+            return false;
+        }
     }
 }
