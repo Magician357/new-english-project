@@ -16,7 +16,7 @@ class player {
         console.log("top left",this.top_left);
         console.log("bottom right",this.bottom_right);
     }
-    get_camera_view(padding_ratio = 0.5) {
+    get_camera_view(padding_ratio = 1) {
         const centerX = (this.top_left[0] + this.bottom_right[0]) / 2;
         const centerY = (this.top_left[1] + this.bottom_right[1]) / 2;
     

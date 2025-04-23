@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
 html, body{
     margin: 0;
     background-color: black;
@@ -5,10 +7,16 @@ html, body{
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     height: 100%;
 }
 
 #main {
     border: 1px solid white;
     height: 90%;
+}
+
+h1 {
+    color:white;
+    font-family: "Roboto", sans-serif;
 }

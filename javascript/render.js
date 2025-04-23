@@ -15,6 +15,8 @@ class render_obj {
         this.camera_dx = 0;
         this.camera_dy = 0;
         this.camera_dzoom = 1;
+
+        this.ctx.font = "20px sans-serif";
     }
 
     clear() {
@@ -52,6 +54,22 @@ class render_obj {
         this.ctx.stroke();
     }
 
+    draw_hexagon_camera(x,y,r,fill="white",border="grey"){
+        this.ctx.fillStyle   = fill;
+        this.ctx.strokeStyle = border;
+
+        const a = Math.PI / 3;
+
+        this.ctx.beginPath()
+        for (let i = 0; i < 6; i++){
+            this.ctx.lineTo(x + r * Math.cos(a * i), y + r * Math.sin(a * i));
+        }
+        this.ctx.closePath();
+        this.ctx.fill();
+        this.ctx.stroke();
+        
+    }
+
     set_camera(x, y, camera_zoom=this.camera_zoom) {
         this.camera_x     = x || 0;
         this.camera_y     = y || 0;
@@ -86,5 +104,19 @@ class render_obj {
             (u - Math.floor(this.width / 2)) / this.camera_zoom + this.camera_x,
             ((v - Math.floor(this.height / 2)) / this.camera_zoom + this.camera_y)*-1
         ];
+    }
+
+    draw_text(u, v, text) {
+        this.ctx.fillStyle = 'black';
+        this.ctx.fillText(text, u, v);
+    }      
+
+    draw_rect(u, v, w, h, border="black", fill="white") {
+        this.ctx.beginPath();
+        this.ctx.rect(u,v,w,h);
+        this.ctx.fillStyle=fill;
+        this.ctx.fill()
+        this.ctx.strokeStyle=border;
+        this.ctx.stroke();
     }
 }
